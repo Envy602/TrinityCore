@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2008-2012 Trinity <http://www.trinitycore.org/>
- * Copyright (C) 2008-2010 EiloRepo <https://github.com/eilo/ReanEmu/>
+ * Copyright (C) 2008-2010 Trinity <http://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,8 +76,8 @@ enum Spells
     SPELL_REGROWTH                    = 69882,
     SPELL_REJUVENATION                = 69898,
 
-    SPELL_SUMMON_BATTLE_STANDART_A    = 69808, //old: 69810
-    SPELL_SUMMON_BATTLE_STANDART_H    = 69809, //old: 69811
+    SPELL_SUMMON_BATTLE_STANDART_A    = 69808,
+    SPELL_SUMMON_BATTLE_STANDART_H    = 69809,
 
     // Kor'kron Defender
     SPELL_DEVASTATE                   = 69902,
@@ -756,12 +755,12 @@ class npc_muradin_gunship : public CreatureScript
             {
                 if ((!player->GetGroup() || !player->GetGroup()->IsLeader(player->GetGUID())) && !player->isGameMaster())
                 {
-                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Je ne suis pas le chef de raid...", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "[Äã²»ÊÇ¶Ó³¤£¬ÎÞ·¨¿ªÆôÕ½¶·] ", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
                     player->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, pCreature->GetGUID());
                     return true;
                 }
 
-                player->ADD_GOSSIP_ITEM(0, "Mes compagnons sont tous present, Muradin. Allons-y!", 631, 1001);
+                player->ADD_GOSSIP_ITEM(0, "ÏòÎ×ÑýÍõ½ø¾ü£¡ ", 631, 1001);
                 player->SEND_GOSSIP_MENU(player->GetGossipTextId(pCreature), pCreature->GetGUID());
                 return true;
             }
@@ -775,7 +774,7 @@ class npc_muradin_gunship : public CreatureScript
             player->CLOSE_GOSSIP_MENU();
 
             if (action == GOSSIP_ACTION_INFO_DEF+2)
-                pCreature->MonsterSay("Je vais attendre le chef de raid", LANG_UNIVERSAL, player->GetGUID());
+                pCreature->MonsterSay("Ìø¹ýÅÚÍ§Õ½. ", LANG_UNIVERSAL, player->GetGUID());
 
             if (action == 1001)
             {
@@ -790,14 +789,13 @@ class npc_muradin_gunship : public CreatureScript
             npc_muradin_gunshipAI(Creature *creature) : ScriptedAI(creature),
                 _instance(creature->GetInstanceScript())
             {
-
             }
 
             void Reset()
             {
                 if (_instance->GetBossState(DATA_GUNSHIP_EVENT) == IN_PROGRESS)
                     return;
-                me->SetReactState(REACT_PASSIVE);
+                me->SetReactState(REACT_AGGRESSIVE);
                 me->setFaction(1802);
                 events.Reset();
                 map = me->GetMap();
@@ -808,7 +806,7 @@ class npc_muradin_gunship : public CreatureScript
                 RiflCount = RAID_MODE(4, 6, 4, 6);
                 RocketerDieCount = 0;
                 RiflDieCount = 0;
-                me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP | UNIT_FLAG_NOT_SELECTABLE);
                 EventScheduled = false;
             }
 
@@ -1909,7 +1907,7 @@ class npc_zafod_boombox : public CreatureScript
         {
             // Maybe this isn't blizzlike but I can't find any spell in the DBCs
             if (pPlayer->GetItemCount(49278, false) == 0)
-                pPlayer->ADD_GOSSIP_ITEM(0, "Yeah, je suis sûr que la sécurité est votre priorité absolue. Donnez-moi un jetpack.", 631, 1);
+                pPlayer->ADD_GOSSIP_ITEM(0, "ÊÇµÄ£¬ÎªÁË°²È«Æð¼û£¬Çë¸øÎÒÒ»¸ö»ð¼ý±³°ü°É. ", 631, 1);
             pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
             return true;
         }
@@ -1924,7 +1922,7 @@ class npc_zafod_boombox : public CreatureScript
                 uint32 curItemCount = player->GetItemCount(49278, false);
                 if (curItemCount >= 1)
                 {
-                    pCreature->MonsterWhisper("Vous avez déjà mon jetpack!", player->GetGUIDLow());
+                    pCreature->MonsterWhisper("ÄúÒÑ¾­ÁìÈ¡ÁËÒ»¸ö»ð¼ý±³°üÀ²! ", player->GetGUIDLow());
                     return false;
                 }
 
@@ -1937,7 +1935,7 @@ class npc_zafod_boombox : public CreatureScript
                 }
                 else
                 {
-                    pCreature->MonsterWhisper("Vous ne disposez pas d'espace vide pour mon jet-pack! NOOB", player->GetGUIDLow());
+                    pCreature->MonsterWhisper("ÄúµÄ±³°ü£¬Ã»ÓÐ×ã¹»¿Õ¼äÀ´´æ·Å»ð¼ý±³°ü! ", player->GetGUIDLow());
                     return false;
                 }
             }
@@ -1946,6 +1944,7 @@ class npc_zafod_boombox : public CreatureScript
         }
 };
 
+// SAURFANG
 class npc_saurfang_gunship : public CreatureScript
 {
     public:
@@ -1958,12 +1957,12 @@ class npc_saurfang_gunship : public CreatureScript
             {
                 if ((!player->GetGroup() || !player->GetGroup()->IsLeader(player->GetGUID())) && !player->isGameMaster())
                 {
-                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Je ne suis pas le chef de raid...", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "[Äã²»ÊÇ¶Ó³¤£¬ÎÞ·¨¿ªÆôÕ½¶·] ", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
                     player->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, pCreature->GetGUID());
                     return true;
                 }
 
-                player->ADD_GOSSIP_ITEM(0, "Mes compagnons sont tous present, Saurcroc. Allons-y!", 631, 1001);
+                player->ADD_GOSSIP_ITEM(0, "ÏòÎ×ÑýÍõ½ø¾ü£¡£¡", 631, 1001);
                 player->SEND_GOSSIP_MENU(player->GetGossipTextId(pCreature), pCreature->GetGUID());
                 return true;
             }
@@ -1977,7 +1976,7 @@ class npc_saurfang_gunship : public CreatureScript
             player->CLOSE_GOSSIP_MENU();
 
             if (action == GOSSIP_ACTION_INFO_DEF+2)
-                pCreature->MonsterSay("Je vais attendre le chef de raid.", LANG_UNIVERSAL, player->GetGUID());
+                pCreature->MonsterSay("Ìø¹ýÅÚÍ§Õ½. ", LANG_UNIVERSAL, player->GetGUID());
 
             if (action == 1001)
             {
@@ -1997,7 +1996,7 @@ class npc_saurfang_gunship : public CreatureScript
             {
                 if (_instance->GetBossState(DATA_GUNSHIP_EVENT) == IN_PROGRESS)
                     return;
-                me->SetReactState(REACT_PASSIVE);
+                me->SetReactState(REACT_AGGRESSIVE);
                 me->setFaction(1801);
                 events.Reset();
                 map = me->GetMap();
@@ -2008,6 +2007,7 @@ class npc_saurfang_gunship : public CreatureScript
                 count = 0;
                 RocketerCount = RAID_MODE(2, 4, 2, 4);
                 AxesCount = RAID_MODE(4, 6, 4, 6);
+                me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP | UNIT_FLAG_NOT_SELECTABLE);
                 EventScheduled = false;
             }
 
@@ -2947,7 +2947,7 @@ class npc_icc_spire_frostwyrm: public CreatureScript
                     else
                         Talk(SAY_FROSTWYRM_LAND_A_1);
                     landed = true;
-                    me->SetCanFly(true);
+                    me->SetCanFly(false);
                     me->RemoveUnitMovementFlag(MOVEMENTFLAG_DISABLE_GRAVITY);
                     me->SetInCombatWith(who);
                     me->AddThreat(who, 1.0f);
