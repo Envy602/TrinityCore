@@ -305,8 +305,11 @@ Transport::~Transport()
 {
     for (CreatureSet::iterator itr = m_NPCPassengerSet.begin(); itr != m_NPCPassengerSet.end(); ++itr)
     {
-        (*itr)->SetTransport(NULL);
-        GetMap()->AddObjectToRemoveList(*itr);
+        Creature* passenger = *itr;
+       Map* map = passenger->GetMap();
+       passenger->SetTransport(NULL);
+       passenger->CleanupsBeforeDelete();
+       map->RemoveFromMap(passenger, true);
     }
 
     m_NPCPassengerSet.clear();
@@ -653,7 +656,8 @@ bool Transport::RemovePassenger(Player* passenger)
 
 void Transport::Update(uint32 p_diff)
 {
-    if (!AI())
+    UpdateNPCPositions();
+	if (!AI())
     {
         if (!AIM_Initialize())
             sLog->outError(LOG_FILTER_TRANSPORTS, "Could not initialize GameObjectAI for Transport");
@@ -681,7 +685,7 @@ void Transport::Update(uint32 p_diff)
         else
         {
             Relocate(m_curr->second.x, m_curr->second.y, m_curr->second.z, GetAngle(m_next->second.x, m_next->second.y) + float(M_PI));
-            UpdateNPCPositions(); // COME BACK MARKER
+            //UpdateNPCPositions(); // COME BACK MARKER
             UpdatePlayerPositions();
         }
 
@@ -778,6 +782,8 @@ uint32 Transport::AddNPCPassenger(uint32 tguid, uint32 entry, float x, float y, 
     creature->AddUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT);
     creature->m_movementInfo.guid = GetGUID();
     creature->m_movementInfo.t_pos.Relocate(x, y, z, o);
+	o += GetOrientation();
+	MapManager::NormalizeOrientation(o);
 
     if (anim)
         creature->SetUInt32Value(UNIT_NPC_EMOTESTATE, anim);
@@ -873,11 +879,29 @@ void Transport::UpdateNPCPositions()
 
         float x, y, z, o;
         npc->m_movementInfo.t_pos.GetPosition(x, y, z, o);
+		MapManager::NormalizeOrientation(o);
         CalculatePassengerPosition(x, y, z, o);
         GetMap()->CreatureRelocation(npc, x, y, z, o, false);
         npc->GetTransportHomePosition(x, y, z, o);
         CalculatePassengerPosition(x, y, z, o);
         npc->SetHomePosition(x, y, z, o);
+    }
+
+    for (PlayerSet::iterator itr = m_passengers.begin(); itr != m_passengers.end(); ++itr)
+    {
+        Player* plr = *itr;
+
+        float x, y, z, o;
+        o = GetOrientation() + plr->m_movementInfo.t_pos.m_orientation;
+        MapManager::NormalizeOrientation(o);
+        x = GetPositionX() + (plr->m_movementInfo.t_pos.m_positionX * cos(GetOrientation()) + plr->m_movementInfo.t_pos.m_positionY * sin(GetOrientation() + M_PI));
+        y = GetPositionY() + (plr->m_movementInfo.t_pos.m_positionY * cos(GetOrientation()) + plr->m_movementInfo.t_pos.m_positionX * sin(GetOrientation()));
+        z = GetPositionZ() + plr->m_movementInfo.t_pos.m_positionZ;
+        plr->Relocate(x, y, z, o);
+        UpdateData transData;
+        WorldPacket packet;
+        transData.BuildPacket(&packet);
+        plr->SendDirectMessage(&packet);
     }
 }
 

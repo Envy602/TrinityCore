@@ -20,6 +20,8 @@
 #include "InstanceScript.h"
 #include "ScriptedCreature.h"
 #include "Map.h"
+#include "MapManager.h"
+#include "Transport.h"
 #include "PoolMgr.h"
 #include "AccountMgr.h"
 #include "icecrown_citadel.h"
@@ -747,7 +749,7 @@ class instance_icecrown_citadel : public InstanceMapScript
                 switch (type)
                 {
                     case DATA_LADY_DEATHWHISPER:
-                        SetBossState(DATA_GUNSHIP_EVENT, state);    // Gunship Battle is optionnel for player (script not finished)
+                        //SetBossState(DATA_GUNSHIP_EVENT, state);    // Gunship Battle is optionnel for player (script not finished)
                         if (state == DONE)
                         {
                             if (GameObject* elevator = instance->GetGameObject(LadyDeathwisperElevatorGUID))
