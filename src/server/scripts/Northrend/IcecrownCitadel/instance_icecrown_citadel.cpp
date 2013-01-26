@@ -183,7 +183,7 @@ class instance_icecrown_citadel : public InstanceMapScript
             {
                 if (!TeamInInstance)
                     TeamInInstance = player->GetTeam();
-                    PrepareGunshipEvent(player); // Spawn Gunship Event
+                    PrepareGunshipEvent(); // Spawn Gunship Event
             }
 
             void OnCreatureCreate(Creature* creature)
@@ -1316,20 +1316,14 @@ class instance_icecrown_citadel : public InstanceMapScript
                 }
             }
 
-            void PrepareGunshipEvent(Player* player)
+            void PrepareGunshipEvent()
             {
-                Transport* th;
-                Transport* t;
-
-                if (GetBossState(DATA_GUNSHIP_EVENT) == DONE)
+                if (isPrepared || GetBossState(DATA_GUNSHIP_EVENT) == DONE)
                     return;
 
-                if(!isPrepared)
-                {
-                sLog->outInfo(LOG_FILTER_MAPS, "isPrepared = false ----");
                 if(TeamInInstance == ALLIANCE)
                 {
-                    if(th = sMapMgr->LoadTransportInMap(instance, GO_ORGRIM_S_HAMMER_ALLIANCE_ICC, 108000))
+                    if(Transport* th = sMapMgr->LoadTransportInMap(instance, GO_ORGRIM_S_HAMMER_ALLIANCE_ICC, 108000))
                     {
                         th->AddNPCPassengerInInstance(NPC_GB_ORGRIMS_HAMMER, 1.845810f, 1.268872f, 34.526218f, 1.5890f);
                         th->AddNPCPassengerInInstance(NPC_GB_HIGH_OVERLORD_SAURFANG, 37.18615f, 0.00016f, 36.78849f, 3.13683f);
@@ -1374,7 +1368,7 @@ class instance_icecrown_citadel : public InstanceMapScript
                         }
                     }
 
-                    if(t = sMapMgr->LoadTransportInMap(instance, GO_THE_SKYBREAKER_ALLIANCE_ICC, 108000))
+                    if(Transport* t = sMapMgr->LoadTransportInMap(instance, GO_THE_SKYBREAKER_ALLIANCE_ICC, 108000))
                     {
                         t->AddNPCPassengerInInstance(NPC_GB_SKYBREAKER, -17.156807f, -1.633260f, 20.81273f, 4.52672f);
                         t->AddNPCPassengerInInstance(NPC_GB_MURADIN_BRONZEBEARD, 13.51547f, -0.160213f, 20.87252f, 3.10672f);
@@ -1421,10 +1415,10 @@ class instance_icecrown_citadel : public InstanceMapScript
                     }
                 }
 
-                if(TeamInInstance == HORDE)
+               if(TeamInInstance == HORDE)
                 {
-                    if(t = sMapMgr->LoadTransportInMap(instance, GO_THE_SKYBREAKER_HORDE_ICC, 77800))
-                    {
+                 if(Transport* t = sMapMgr->LoadTransportInMap(instance, GO_THE_SKYBREAKER_HORDE_ICC, 77800))
+				 {
                         t->AddNPCPassengerInInstance(NPC_GB_SKYBREAKER, -17.156807f, -1.633260f, 20.81273f, 4.52672f);
                         t->AddNPCPassengerInInstance(NPC_GB_MURADIN_BRONZEBEARD, 13.51547f, -0.160213f, 20.87252f, 3.10672f);
                         t->AddNPCPassengerInInstance(NPC_GB_HIHG_CAPTAIN_JUSTIN_BARTLETT, 42.78902f, -0.010491f, 25.24052f, 3.00672f);
@@ -1452,16 +1446,16 @@ class instance_icecrown_citadel : public InstanceMapScript
                         t->AddNPCPassengerInInstance(NPC_GB_GUNSHIP_HULL, 4.780305f, -29.05227f, 35.09634f, 1.6f);
 
                         if(instance->ToInstanceMap()->GetMaxPlayers() == 10)
-                        {
+                      {
                             t->AddNPCPassengerInInstance(NPC_GB_SKYBREAKER_RIFLEMAN, -5.15231f, -22.9462f, 21.659f, 4.72416f);
                             t->AddNPCPassengerInInstance(NPC_GB_SKYBREAKER_RIFLEMAN, -14.9806f, -22.9462f, 21.659f, 4.72416f);
                             t->AddNPCPassengerInInstance(NPC_GB_SKYBREAKER_RIFLEMAN, -21.7406f, -22.9462f, 21.659f, 4.72416f);
                             t->AddNPCPassengerInInstance(NPC_GB_SKYBREAKER_RIFLEMAN, -28.0876f, -22.9462f, 21.659f, 4.72416f);
                             t->AddNPCPassengerInInstance(NPC_GB_SKYBREAKER_MORTAR_SOLDIER, -8.61003f, 15.483f, 20.4158f, 4.69854f);
                             t->AddNPCPassengerInInstance(NPC_GB_SKYBREAKER_MORTAR_SOLDIER, -27.9583f, 14.8875f, 20.4428f, 4.77865f);
-                        }
+                      }
                         else
-                        {
+                      {
                             t->AddNPCPassengerInInstance(NPC_GB_SKYBREAKER_RIFLEMAN, 0.15231f, -22.9462f, 21.659f, 4.72416f);
                             t->AddNPCPassengerInInstance(NPC_GB_SKYBREAKER_RIFLEMAN, -5.15231f, -22.9462f, 21.659f, 4.72416f);
                             t->AddNPCPassengerInInstance(NPC_GB_SKYBREAKER_RIFLEMAN, -14.9806f, -22.9462f, 21.659f, 4.72416f);
@@ -1472,11 +1466,11 @@ class instance_icecrown_citadel : public InstanceMapScript
                             t->AddNPCPassengerInInstance(NPC_GB_SKYBREAKER_MORTAR_SOLDIER, -27.9583f, 14.8875f, 20.4428f, 4.77865f);
                             t->AddNPCPassengerInInstance(NPC_GB_SKYBREAKER_MORTAR_SOLDIER, -15.61003f, 15.483f, 20.4158f, 4.69854f);
                             t->AddNPCPassengerInInstance(NPC_GB_SKYBREAKER_MORTAR_SOLDIER, -20.9583f, 14.8875f, 20.4428f, 4.77865f);
-                        }
-                    }
-                
-                    if(th = sMapMgr->LoadTransportInMap(instance,GO_ORGRIM_S_HAMMER_HORDE_ICC, 77800))
-                    {
+                      }
+                 }
+                 
+                    if(Transport* th = sMapMgr->LoadTransportInMap(instance,GO_ORGRIM_S_HAMMER_HORDE_ICC, 77800))
+                  {
                         th->AddNPCPassengerInInstance(NPC_GB_ORGRIMS_HAMMER, 1.845810f, 1.268872f, 34.526218f, 1.5890f);
                         th->AddNPCPassengerInInstance(NPC_GB_HIGH_OVERLORD_SAURFANG, 37.18615f, 0.00016f, 36.78849f, 3.13683f);
                         th->AddNPCPassengerInInstance(NPC_GB_MURADIN_BRONZEBEARD_NOT_VISUAL, -7.09684f, 30.582f, 34.5013f, 1.53591f);
@@ -1507,15 +1501,9 @@ class instance_icecrown_citadel : public InstanceMapScript
                             th->AddNPCPassengerInInstance(NPC_GB_HORDE_CANON, -7.09684f, 30.582f, 34.5013f, 1.53591f);
                             th->AddNPCPassengerInInstance(NPC_GB_HORDE_CANON, -21.7509f, 29.4207f, 34.2588f, 1.53591f);
                         }
-                    }
+                  }
                 }
                 isPrepared = true;
-                }
-                else
-                {
-                    sLog->outInfo(LOG_FILTER_MAPS, "isPrepared =true ----");
-                    sMapMgr->LoadTransportForPlayers(player);
-                }
             }
 
         protected:
