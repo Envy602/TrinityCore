@@ -2157,6 +2157,15 @@ class Unit : public WorldObject
 
         int32 GetHighestExclusiveSameEffectSpellGroupValue(AuraEffect const* aurEff, AuraType auraType, bool sameMiscValue = false) const;
 
+        //npcbot
+        void SuspendDelayedSwing();
+        void ExecuteDelayedSwingHit(bool extra = false);
+        CalcDamageInfo _damageInfo;
+        uint64 _delayedTargetGuid;
+        uint32 _swingDelayTimer;
+        bool _swingLanded;
+        //end npcbot
+
     protected:
         explicit Unit (bool isWorldObject);
 
